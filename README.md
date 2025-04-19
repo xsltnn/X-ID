@@ -1,19 +1,23 @@
-# X-ID v5 🕵️ - OSINT Tools for Indonesia
+# X-ID v5 🕵️ - OSINT Tools untuk Indonesia
 
 ![Logo](xid-logo.png)
 
-X-ID adalah toolkit OSINT terminal buatan XSLTNN untuk pencarian data publik Indonesia:
-- Cek NIK
-- Nomor HP + HLR Lookup
-- Email validator + breach checker
-- Username & Marketplace checker
-- Kendaraan (API Samsat)
-- Nama lengkap (API + Google dork)
-- Domain/IP + Whois
-- Hash encoder
-- Google Dork generator
+X-ID adalah toolkit OSINT berbasis terminal yang dikembangkan oleh **XSLTNN** untuk melakukan pencarian data publik di Indonesia. Tools ini dibuat secara modular dan legal menggunakan data terbuka (open source intelligence).
 
-## 🔧 Cara Install
+## 🔧 Fitur Utama
+
+- ✅ Cek NIK (lengkap dengan wilayah, gender, tanggal lahir)
+- ✅ Validasi & cek breach Email
+- ✅ Cek Nomor HP dengan integrasi API HLR
+- ✅ Cek Username di beberapa platform
+- ✅ Cari Nama Lengkap (API + fallback Google dork)
+- ✅ Cari data Kendaraan berdasarkan plat nomor (Samsat Jogja API)
+- ✅ Marketplace checker (Tokopedia, Bukalapak, RedDoorz)
+- ✅ IP/Domain Lookup (WHOIS)
+- ✅ Google Dork Generator
+- ✅ Hash dan Base64 Encoder
+
+## 📦 Instalasi
 
 ```bash
 git clone https://github.com/xsltnn/x-id.git
@@ -33,10 +37,8 @@ $ python main.py
 ...
 ```
 
-## 📦 Download Release
+## ⚠️ License
 
-[⬇️ Download X-ID v5 (.zip)](https://github.com/xsltnn/x-id/releases)
+© 2025 XSLTNN - Semua hak cipta dilindungi.  
+Kode sumber ini tidak boleh diduplikasi, dimodifikasi, atau dipublikasikan ulang tanpa izin tertulis dari pembuat.
 
-## 📄 License
-
-X-ID menggunakan lisensi MIT. Bebas digunakan & dikembangkan.
