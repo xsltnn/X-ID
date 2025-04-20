@@ -3,13 +3,13 @@
 MOO T2 adalah Toolkit AIO OSINT Indonesia:
 - Cek NIK
 - Nomor HP + HLR Lookup
-- Email validator + breach checker
-- Username & Marketplace checker
+- Email Validator + Breach Checker
+- Username & Marketplace Checker
 - Kendaraan (API Samsat)
-- Nama lengkap (API + Google dork)
+- Nama Lengkap (API + Google Dork)
 - Domain/IP + Whois
-- Hash encoder
-- Google Dork generator
+- Hash Encoder SHA/BASE64 (MD5,SHA1,SHA256,BASE64)
+- Google Dork Generator
 
 ## 🔧 Cara Install
 
@@ -31,10 +31,7 @@ $ python main.py
 ...
 ```
 
-## 📦 Download Release
-
-[⬇️ Download MOO T2 V5 (.zip)](https://github.com/xsltnn/x-id/releases)
-
 ## 📄 License
 
-MOO T2 menggunakan lisensi MIT. Bebas digunakan & dikembangkan.
+Copyright (c) 2025 XSLTNN
+All rights reserved.
