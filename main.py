@@ -115,18 +115,25 @@ def cek_nomor_hp(nomor):
         carrier = phonenumbers.carrier.name_for_number(parsed, "id")
         region = phonenumbers.geocoder.description_for_number(parsed, "id")
         api_url = f"https://www.ibacor.com/api/hlr-lookup?nohp={nomor}"
-        res = requests.get(api_url)
+        headers = {
+            "User-Agent": "Mozilla/5.0"
+        }
+        res = requests.get(api_url, headers=headers)
         data = res.json()
 
-        lokasi = data.get("lokasi", "-")
-        operator_api = data.get("operator", "-")
+        if data.get("status") != "success":
+            lokasi = "Tidak ditemukan"
+            operator_api = "-"
+        else:
+            lokasi = data.get("lokasi", "-")
+            operator_api = data.get("operator", "-")
 
         return f"""
 [✔] Nomor Valid   : {valid}
-[✔] Operator      : {carrier}
-[✔] Wilayah       : {region}
-[✔] Lokasi (API)  : {lokasi}
-[✔] Operator (API): {operator_api}
+[✔] Operator (Local) : {carrier}
+[✔] Wilayah (Geo)    : {region}
+[✔] Lokasi (API)     : {lokasi}
+[✔] Operator (API)   : {operator_api}
 """
     except Exception as e:
         return f"Nomor tidak valid atau error: {e}"
