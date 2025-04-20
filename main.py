@@ -50,7 +50,7 @@ def parse_nik(nik):
     ultah = dt(tahun_lahir, bulan, tanggal_lahir).strftime("%d %B %Y")
 
     zodiak = get_zodiac(tanggal_lahir, bulan)
-    pasaran = get_pasaran(dt(tahun_lahir, bulan, tanggal_lahir))
+    weton = get_weton(dt(tahun_lahir, bulan, tanggal_lahir))
 
     wilayah = get_wilayah(kode_prov, kode_kab, kode_kec)
 
@@ -59,7 +59,7 @@ def parse_nik(nik):
 [✔] Tanggal Lahir : {ultah}
 [✔] Usia          : {usia} tahun
 [✔] Zodiak        : {zodiak}
-[✔] Pasaran Jawa  : {pasaran}
+[✔] Weton         : {weton}
 {wilayah}    """
 
 # ------------------ ZODIAK ------------------
@@ -72,12 +72,12 @@ def get_zodiac(day, month):
     ]
     return zodiacs[month - 1][1] if day < zodiacs[month - 1][0] else zodiacs[month % 12][1]
 
-# ------------------ PASARAN ------------------
-def get_pasaran(tanggal):
-    pasaran = ['Legi', 'Pahing', 'Pon', 'Wage', 'Kliwon']
+# ------------------ weton ------------------
+def get_weton(tanggal):
+    weton = ['Legi', 'Pahing', 'Pon', 'Wage', 'Kliwon']
     base_date = dt(1900, 1, 1)
     selisih = (tanggal - base_date).days
-    return pasaran[selisih % 5]
+    return weton[selisih % 5]
 
 # ------------------ API WILAYAH ------------------
 def get_wilayah(kode_prov, kode_kab, kode_kec):
