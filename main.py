@@ -10,6 +10,7 @@ import socket
 import whois
 import hashlib
 import base64
+from phonenumbers import carrier, geocoder
 from datetime import datetime as dt
 from colorama import Fore, Style, init
 init(autoreset=True)
@@ -109,11 +110,15 @@ def cek_nomor_hp(nomor):
             nomor = "+62" + nomor[1:]
         elif nomor.startswith("62"):
             nomor = "+" + nomor
+        elif not nomor.startswith("+"):
+            return "Format nomor tidak dikenali."
 
         parsed = phonenumbers.parse(nomor, "ID")
         valid = phonenumbers.is_valid_number(parsed)
-        carrier = phonenumbers.carrier.name_for_number(parsed, "id")
-        region = phonenumbers.geocoder.description_for_number(parsed, "id")
+        operator_local = carrier.name_for_number(parsed, "id")
+        region_local = geocoder.description_for_number(parsed, "id")
+
+        # API HLR Lookup
         api_url = f"https://www.ibacor.com/api/hlr-lookup?nohp={nomor}"
         headers = {
             "User-Agent": "Mozilla/5.0"
@@ -121,73 +126,18 @@ def cek_nomor_hp(nomor):
         res = requests.get(api_url, headers=headers)
         data = res.json()
 
-        if data.get("status") != "success":
-            lokasi = "Tidak ditemukan"
-            operator_api = "-"
-        else:
-            lokasi = data.get("lokasi", "-")
-            operator_api = data.get("operator", "-")
+        lokasi = data.get("lokasi", "-") if data.get("status") == "success" else "Tidak ditemukan"
+        operator_api = data.get("operator", "-") if data.get("status") == "success" else "-"
 
         return f"""
-[✔] Nomor Valid   : {valid}
-[✔] Operator (Local) : {carrier}
-[✔] Wilayah (Geo)    : {region}
-[✔] Lokasi (API)     : {lokasi}
-[✔] Operator (API)   : {operator_api}
+[✔] Nomor Valid       : {valid}
+[✔] Operator (Local)  : {operator_local}
+[✔] Wilayah (Local)   : {region_local}
+[✔] Lokasi (API)      : {lokasi}
+[✔] Operator (API)    : {operator_api}
 """
     except Exception as e:
         return f"Nomor tidak valid atau error: {e}"
-
-# ------------------ CEK EMAIL ------------------
-def cek_email(email):
-    pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
-    if re.match(pattern, email):
-        domain = email.split('@')[-1]
-        return f"[✔] Format email valid\n[✔] Domain: {domain}"
-    return "Email tidak valid."
-
-# ------------------ CEK USERNAME ------------------
-def cek_username(username):
-    social_media = ["https://instagram.com/{}", "https://x.com/{}", "https://github.com/{}", "https://tiktok.com/{}", "https://threads.net/{}", "https://open.spotify.com/{}", "https://discord.com/{}", "https://web.telegram.org/{}", "https://m.facebook.com/{}", "https://snackvideo.com/{}", "https://snapchat.com/{}", "https://id.linkedin.com/{}"]
-    hasil = ""
-    for url in social_media:
-        full_url = url.format(username)
-        try:
-            r = requests.get(full_url)
-            status = "ADA" if r.status_code == 200 else "TIDAK ADA"
-            hasil += f"[✔] {full_url} : {status}\n"
-        except:
-            hasil += f"[✖] {full_url} : ERROR\n"
-    return hasil
-
-# ------------------ CEK GOOGLE DORK ------------------
-def google_dork(keyword):
-    dorks = [
-        f"site:pastebin.com {keyword}",
-        f"site:github.com {keyword}",
-        f"intitle:index.of {keyword}",
-        f"inurl:/php?={keyword}",
-        f"intext:{keyword} filetype:pdf"
-    ]
-    result = "\n[!] Google Dork Suggestions:\n"
-    for d in dorks:
-        result += f"[✔] {d}\n"
-    return result
-
-# ------------------ CEK DOMAIN / IP ------------------
-def lookup_domain(domain):
-    try:
-        ip = socket.gethostbyname(domain)
-        who = whois.whois(domain)
-        return f"""
-[✔] Domain : {domain}
-[✔] IP     : {ip}
-[✔] Registrar : {who.registrar}
-[✔] Country   : {who.country}
-[✔] Created   : {who.creation_date}
-"""
-    except:
-        return "Domain/IP tidak bisa diproses."
 
 # ------------------ HASHING TOOLS ------------------
 def generate_hash(data):
