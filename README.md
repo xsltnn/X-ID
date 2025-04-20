@@ -1,8 +1,6 @@
-# X-ID v5 🕵️ - OSINT Tools for Indonesia
+# MOO T2 V5 🕵️ - OSINT Tools for Indonesia
 
-![Logo](xid-logo.png)
-
-X-ID adalah toolkit OSINT terminal buatan XSLTNN untuk pencarian data publik Indonesia:
+MOO T2 adalah toolkit OSINT terminal buatan XSLTNN untuk pencarian data publik Indonesia:
 - Cek NIK
 - Nomor HP + HLR Lookup
 - Email validator + breach checker
@@ -35,8 +33,8 @@ $ python main.py
 
 ## 📦 Download Release
 
-[⬇️ Download X-ID v5 (.zip)](https://github.com/xsltnn/x-id/releases)
+[⬇️ Download MOO T2 V5 (.zip)](https://github.com/xsltnn/x-id/releases)
 
 ## 📄 License
 
-X-ID menggunakan lisensi MIT. Bebas digunakan & dikembangkan.
+MOO T2 menggunakan lisensi MIT. Bebas digunakan & dikembangkan.
