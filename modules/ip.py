@@ -1,1 +1,0 @@
-def lookup_ip(d): return f'IP info {d}'

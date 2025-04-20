@@ -1,1 +1,0 @@
-def validate_email(e): return f'Email {e} valid.'

@@ -1,4 +1,5 @@
 requests
 phonenumbers
-dnspython
 python-whois
+dnspython
+colorama

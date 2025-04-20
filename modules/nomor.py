@@ -1,1 +1,0 @@
-def lookup_nomor(n): return f'Nomor {n} valid'

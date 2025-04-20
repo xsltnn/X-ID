@@ -1,1 +1,0 @@
-def cek_username(u): return f'Akun {u} tersedia'

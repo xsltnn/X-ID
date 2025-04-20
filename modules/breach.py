@@ -1,1 +1,0 @@
-def check_breach(e): return f'No breach found for {e}'

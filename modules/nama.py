@@ -1,1 +1,0 @@
-def cari_nama_lengkap(n): return f'Hasil pencarian nama: {n}'

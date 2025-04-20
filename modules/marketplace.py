@@ -1,1 +1,0 @@
-def cek_marketplace(u): return f'Username {u} not found'

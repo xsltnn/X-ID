@@ -1,1 +1,0 @@
-def generate_dorks(k): return f'Dork untuk {k}'

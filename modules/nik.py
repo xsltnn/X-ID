@@ -1,1 +1,0 @@
-def parse_nik(nik): return f'NIK: {nik} valid'

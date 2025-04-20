@@ -1,1 +1,0 @@
-def lookup_kendaraan(p): return f'Data plat {p} ditemukan'
