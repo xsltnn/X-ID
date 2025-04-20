@@ -118,16 +118,23 @@ def cek_nomor_hp(nomor):
         operator_local = carrier.name_for_number(parsed, "id")
         region_local = geocoder.description_for_number(parsed, "id")
 
-        # API HLR Lookup
+        # API HLR Lookup dengan proteksi parsing
         api_url = f"https://www.ibacor.com/api/hlr-lookup?nohp={nomor}"
-        headers = {
-            "User-Agent": "Mozilla/5.0"
-        }
+        headers = {"User-Agent": "Mozilla/5.0"}
         res = requests.get(api_url, headers=headers)
-        data = res.json()
 
-        lokasi = data.get("lokasi", "-") if data.get("status") == "success" else "Tidak ditemukan"
-        operator_api = data.get("operator", "-") if data.get("status") == "success" else "-"
+        lokasi = "-"
+        operator_api = "-"
+
+        if res.status_code == 200:
+            try:
+                data = res.json()
+                if data.get("status") == "success":
+                    lokasi = data.get("lokasi", "-")
+                    operator_api = data.get("operator", "-")
+            except Exception as e:
+                lokasi = "Error parsing JSON"
+                operator_api = f"Respon tidak valid"
 
         return f"""
 [✔] Nomor Valid       : {valid}
