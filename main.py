@@ -1,4 +1,4 @@
-# X-ID v4 - OSINT Terminal Tool untuk Indonesia 🇮🇩
+# MOO T2 V5 - OSINT Tool Indonesia 🇮🇩
 # Created by XSLTNN
 # Powerful OSINT Tools for Indonesia - All-in-One Terminal Toolkit
 
@@ -24,8 +24,8 @@ def banner():
 | |  | | |__| | |__| |   _| |_ / /_ 
 |_|  |_|\____/ \____/   |____|____|
 
-          X-ID
- Created by XSLTNN - Powerful Indonesian OSINT Toolkit (v4)
+          MASSIVE OSINT OPERATION TARGET 2
+ Created by XSLTNN - Powerful Indonesian OSINT Toolkit (V5)
 ''')
 
 # ------------------ CEK NIK ------------------
