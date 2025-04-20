@@ -1,6 +1,6 @@
 # MOO T2 V5 🕵️ - OSINT Tools for Indonesia
 
-MOO T2 adalah toolkit OSINT terminal buatan XSLTNN untuk pencarian data publik Indonesia:
+MOO T2 adalah Toolkit AIO OSINT Indonesia:
 - Cek NIK
 - Nomor HP + HLR Lookup
 - Email validator + breach checker
