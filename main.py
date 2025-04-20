@@ -132,7 +132,7 @@ def cek_email(email):
 
 # ------------------ CEK USERNAME ------------------
 def cek_username(username):
-    social_media = ["https://instagram.com/{}", "https://x.com/{}", "https://github.com/{}", "https://tiktok.com/{}", "https://threads.net/{}", "https://open.spotify.com/{}", "https://discord.com/{}", "https://web.telegram.org/{}", "https://m.facebook.com/{}"]
+    social_media = ["https://instagram.com/{}", "https://x.com/{}", "https://github.com/{}", "https://tiktok.com/{}", "https://threads.net/{}", "https://open.spotify.com/{}", "https://discord.com/{}", "https://web.telegram.org/{}", "https://m.facebook.com/{}", "https://snackvideo.com/{}", "https://www.bigo.tv/{}"]
     hasil = ""
     for url in social_media:
         full_url = url.format(username)
