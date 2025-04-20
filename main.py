@@ -2,6 +2,8 @@
 # Created by XSLTNN
 # Powerful OSINT Tools for Indonesia - All-in-One Terminal Toolkit
 
+import datetime
+import json
 import requests
 import re
 import os
@@ -29,38 +31,102 @@ def banner():
 ''')
 
 # ------------------ CEK NIK ------------------
+# Load data wilayah (simulasi dari hasil download API EMSIFA)
+basedir = os.path.dirname(__file__)
+
+def load_json(filename):
+    with open(os.path.join(basedir, 'wilayah', filename), encoding='utf-8') as f:
+        return json.load(f)
+
+PROVINSI = load_json('provinces.json')
+KOTA = load_json('regencies_32.json')  # Contoh Jabar
+KEC = load_json('districts_3204.json')
+
+KODEPOS = {
+    '320411': '40921'
+}
+
+NIK_TO_NAMA = {
+    '3204110609970001': 'Reza Ramadhan',
+    '3204112001020002': 'Dewi Ayu Lestari'
+}
+
+def get_nama_wilayah(data, kode, length=2):
+    for d in data:
+        if d['id'][:length] == kode:
+            return d['name'].upper()
+    return 'Tidak diketahui'
+
+def get_zodiac(day, month):
+    zodiak = [
+        ((1, 20), (2, 18), 'Aquarius'),
+        ((2, 19), (3, 20), 'Pisces'),
+        ((3, 21), (4, 19), 'Aries'),
+        ((4, 20), (5, 20), 'Taurus'),
+        ((5, 21), (6, 20), 'Gemini'),
+        ((6, 21), (7, 22), 'Cancer'),
+        ((7, 23), (8, 22), 'Leo'),
+        ((8, 23), (9, 22), 'Virgo'),
+        ((9, 23), (10, 22), 'Libra'),
+        ((10, 23), (11, 21), 'Scorpio'),
+        ((11, 22), (12, 21), 'Sagittarius'),
+        ((12, 22), (1, 19), 'Capricorn')
+    ]
+    for start, end, zod in zodiak:
+        if (month == start[0] and day >= start[1]) or (month == end[0] and day <= end[1]):
+            return zod
+    return ''
+
 def parse_nik(nik):
     if len(nik) != 16 or not nik.isdigit():
-        return "NIK tidak valid (harus 16 digit angka)."
+        return {'status': 'error', 'pesan': 'NIK tidak valid'}
 
     kode_prov = nik[:2]
-    kode_kab = nik[2:4]
-    kode_kec = nik[4:6]
-    tanggal = int(nik[6:8])
-    bulan = int(nik[8:10])
-    tahun = int(nik[10:12])
+    kode_kota = nik[:4]
+    kode_kec = nik[:6]
+    tgl = int(nik[6:8])
+    bln = int(nik[8:10])
+    thn = int(nik[10:12])
+    uniqcode = nik[12:]
 
-    kelamin = "Perempuan" if tanggal > 40 else "Laki-laki"
-    tanggal_lahir = tanggal - 40 if kelamin == "Perempuan" else tanggal
+    kelamin = 'PEREMPUAN' if tgl > 40 else 'LAKI-LAKI'
+    tgl_lahir = tgl - 40 if kelamin == 'PEREMPUAN' else tgl
+    tahun_lahir = 2000 + thn if thn < 25 else 1900 + thn
 
-    now_year = int(dt.now().strftime("%y"))
-    tahun_lahir = 1900 + tahun if tahun > now_year else 2000 + tahun
-    usia = dt.now().year - tahun_lahir
+    try:
+        tanggal = datetime.date(tahun_lahir, bln, tgl_lahir)
+    except:
+        return {'status': 'error', 'pesan': 'Tanggal lahir tidak valid'}
 
-    ultah = dt(tahun_lahir, bulan, tanggal_lahir).strftime("%d %B %Y")
+    hari_ini = datetime.date.today()
+    usia = hari_ini.year - tanggal.year - ((hari_ini.month, hari_ini.day) < (tanggal.month, tanggal.day))
+    ultah = datetime.date(hari_ini.year, tanggal.month, tanggal.day)
+    if ultah < hari_ini:
+        ultah = datetime.date(hari_ini.year + 1, tanggal.month, tanggal.day)
+    selisih_ultah = (ultah - hari_ini).days
 
-    zodiak = get_zodiac(tanggal_lahir, bulan)
-    weton = get_weton(dt(tahun_lahir, bulan, tanggal_lahir))
+    nama = NIK_TO_NAMA.get(nik, 'Tidak ditemukan')
 
-    wilayah = get_wilayah(kode_prov, kode_kab, kode_kec)
-
-    return f"""
-[✔] Jenis Kelamin : {kelamin}
-[✔] Tanggal Lahir : {ultah}
-[✔] Usia          : {usia} tahun
-[✔] Zodiak        : {zodiak}
-[✔] Weton         : {weton}
-{wilayah}    """
+    return {
+        'status': 'success',
+        'pesan': 'NIK valid',
+        'data': {
+            'nik': nik,
+            'nama_lengkap': nama,
+            'kelamin': kelamin,
+            'lahir': tanggal.strftime('%d/%m/%Y'),
+            'provinsi': get_nama_wilayah(PROVINSI, kode_prov, 2),
+            'kotakab': get_nama_wilayah(KOTA, kode_kota, 4),
+            'kecamatan': get_nama_wilayah(KEC, kode_kec, 6),
+            'uniqcode': uniqcode,
+            'tambahan': {
+                'kodepos': KODEPOS.get(kode_kec, '-'),
+                'zodiak': get_zodiac(tanggal.day, tanggal.month),
+                'usia': f'{usia} tahun',
+                'ultah': f'{selisih_ultah} hari lagi'
+            }
+        }
+    }
 
 # ------------------ ZODIAK ------------------
 def get_zodiac(day, month):
