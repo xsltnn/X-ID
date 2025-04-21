@@ -10,6 +10,7 @@ import socket
 import whois
 import hashlib
 import base64
+from bs4 import BeautifulSoup
 from phonenumbers import carrier, geocoder
 from datetime import datetime as dt
 from colorama import Fore, Style, init
@@ -145,7 +146,133 @@ def cek_nomor_hp(nomor):
 """
     except Exception as e:
         return f"Nomor tidak valid atau error: {e}"
+    
+# ========== PROVINSI ==========
+def cek_plat_jatim(nopol: str):
+    try:
+        parts = nopol.strip().upper().split()
+        if len(parts) < 2:
+            return {"error": "Format plat tidak valid. Contoh: L 1234 XX"}
+        kode = parts[0]
+        nomor = ''.join(filter(str.isdigit, parts[1]))
+        seri = parts[2] if len(parts) > 2 else ""
 
+        url = "https://info.dipendajatim.go.id/esamsat/index.php?page=hasil"
+        data = {
+            "jenis": "semua",
+            "nopol1": kode,
+            "nopol2": nomor,
+            "nopol3": seri,
+            "cari": "Cari"
+        }
+
+        headers = {
+            "User-Agent": "Mozilla/5.0",
+            "Referer": "https://info.dipendajatim.go.id/esamsat/"
+        }
+
+        response = requests.post(url, data=data, headers=headers, timeout=10)
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        table = soup.find("table", {"class": "table"})
+        if table:
+            rows = table.find_all("tr")
+            info = {}
+            for row in rows:
+                cols = row.find_all("td")
+                if len(cols) == 2:
+                    key = cols[0].get_text(strip=True)
+                    value = cols[1].get_text(strip=True)
+                    info[key] = value
+            return {"status": "success", "provinsi": "Jatim", "data": info}
+        else:
+            return {"status": "not found", "provinsi": "Jatim", "message": "Data tidak ditemukan atau format berubah."}
+    except Exception as e:
+        return {"status": "error", "provinsi": "Jatim", "message": str(e)}
+
+def cek_plat_jabar(nopol: str):
+    try:
+        url = "https://bapenda.jabarprov.go.id/e-samsat-jabar/"
+        headers = {"User-Agent": "Mozilla/5.0"}
+        response = requests.get(url, headers=headers, timeout=10)
+        soup = BeautifulSoup(response.text, "html.parser")
+        result_div = soup.find("div", {"id": "result"})
+
+        if result_div:
+            return {"status": "success", "provinsi": "Jabar", "data": result_div.get_text(strip=True)}
+        else:
+            return {"status": "not found", "provinsi": "Jabar", "message": "Tidak ada hasil atau halaman berubah."}
+    except Exception as e:
+        return {"status": "error", "provinsi": "Jabar", "message": str(e)}
+
+def cek_plat_jakarta(nopol: str):
+    try:
+        url = "https://samsat-pkb2.jakarta.go.id/info-pkb"
+        headers = {"User-Agent": "Mozilla/5.0"}
+
+        parts = nopol.strip().upper().split()
+        if len(parts) < 2:
+            return {"error": "Format plat tidak valid. Contoh: B 1234 XX"}
+        kode = parts[0]
+        nomor = ''.join(filter(str.isdigit, parts[1]))
+        seri = parts[2] if len(parts) > 2 else ""
+
+        query = f"{kode}{nomor}{seri}"
+        full_url = f"{url}?nopol={query}"
+        response = requests.get(full_url, headers=headers, timeout=10)
+
+        soup = BeautifulSoup(response.text, "html.parser")
+        result = soup.find("div", class_="content")
+
+        if result:
+            return {"status": "success", "provinsi": "DKI", "data": result.get_text(strip=True)}
+        else:
+            return {"status": "not found", "provinsi": "DKI", "message": "Data tidak ditemukan atau halaman berubah."}
+    except Exception as e:
+        return {"status": "error", "provinsi": "DKI", "message": str(e)}
+
+def cek_plat_jateng(nopol: str):
+    return {"status": "unavailable", "provinsi": "Jateng", "message": "Perlu captcha, belum otomatis."}
+
+def cek_plat_sumut(nopol: str):
+    return {"status": "unavailable", "provinsi": "Sumut", "message": "Belum support otomatis, perlu form/captcha."}
+
+def cek_plat_banten(nopol: str):
+    return {"status": "unavailable", "provinsi": "Banten", "message": "Endpoint belum ditemukan."}
+
+def cek_plat_bali(nopol: str):
+    return cek_plat_jatim(nopol)
+
+def cek_plat_diy(nopol: str):
+    return {"status": "unavailable", "provinsi": "DIY", "message": "Belum support otomatis, perlu captcha."}
+
+def cek_plat_kalsel(nopol: str):
+    return {"status": "unavailable", "provinsi": "Kalsel", "message": "Belum support otomatis."}
+
+# ========== ROUTER ==========
+def cek_plat_nomor(provinsi: str, nopol: str):
+    prov = provinsi.lower()
+    if prov in ['jatim', 'jawa timur']:
+        return cek_plat_jatim(nopol)
+    elif prov in ['jabar', 'jawa barat']:
+        return cek_plat_jabar(nopol)
+    elif prov in ['jakarta', 'dki', 'dki jakarta']:
+        return cek_plat_jakarta(nopol)
+    elif prov in ['jateng', 'jawa tengah']:
+        return cek_plat_jateng(nopol)
+    elif prov in ['sumut', 'sumatera utara']:
+        return cek_plat_sumut(nopol)
+    elif prov in ['banten']:
+        return cek_plat_banten(nopol)
+    elif prov in ['bali']:
+        return cek_plat_bali(nopol)
+    elif prov in ['diy', 'yogyakarta']:
+        return cek_plat_diy(nopol)
+    elif prov in ['kalsel', 'kalimantan selatan']:
+        return cek_plat_kalsel(nopol)
+    else:
+        return {"error": f"Provinsi '{provinsi}' belum tersedia atau tidak dikenali."}
+    
 # ------------------ HASHING TOOLS ------------------
 def generate_hash(data):
     hasil = ""
@@ -160,34 +287,54 @@ def main():
     banner()
     print("1. Cek NIK")
     print("2. Cek Nomor HP")
-    print("3. Cek Email")
-    print("4. Cek Username")
-    print("5. Google Dork Generator")
-    print("6. Domain/IP Lookup")
-    print("7. Encode (Hash/BASE64)")
+    print("3. Cek Plat Nomor")
+    print("4. Cek Email")
+    print("5. Cek Username")
+    print("6. Google Dork Generator")
+    print("7. Domain/IP Lookup")
+    print("8. Encode (Hash/BASE64)")
+
     pilihan = input("\nPilih menu: ")
 
     if pilihan == '1':
         nik_input = input("Masukkan NIK (16 digit): ")
         print(parse_nik(nik_input))
+
     elif pilihan == '2':
         nomor = input("Masukkan Nomor HP (cth: 08xxxx atau +62xxxx): ")
         print(cek_nomor_hp(nomor))
+
     elif pilihan == '3':
+        prov = input("Masukkan Provinsi (cth: Jatim, Jabar, DKI): ")
+        plat = input("Masukkan Plat Nomor (cth: B 1234 CD): ")
+        hasil = cek_plat_nomor(prov, plat)
+        if hasil.get("status") == "success":
+            print("\n== DATA KENDARAAN ==")
+            for k, v in hasil["data"].items():
+                print(f"{k}: {v}")
+        else:
+            print(f"[!] {hasil.get('message') or hasil.get('error')}")
+
+    elif pilihan == '4':
         email = input("Masukkan Email: ")
         print(cek_email(email))
-    elif pilihan == '4':
+
+    elif pilihan == '5':
         user = input("Masukkan Username: ")
         print(cek_username(user))
-    elif pilihan == '5':
+
+    elif pilihan == '6':
         key = input("Masukkan keyword: ")
         print(google_dork(key))
-    elif pilihan == '6':
+
+    elif pilihan == '7':
         domain = input("Masukkan domain atau IP: ")
         print(lookup_domain(domain))
-    elif pilihan == '7':
+
+    elif pilihan == '8':
         data = input("Masukkan data untuk encode/hash: ")
         print(generate_hash(data))
+
     else:
         print("Pilihan tidak tersedia.")
 
