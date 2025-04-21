@@ -10,7 +10,6 @@ import socket
 import whois
 import hashlib
 import base64
-from bs4 import BeautifulSoup
 from phonenumbers import carrier, geocoder
 from datetime import datetime as dt
 from colorama import Fore, Style, init
