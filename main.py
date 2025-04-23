@@ -108,21 +108,21 @@ print("3. Cari berdasarkan Nomor Telepon")
 print("4. Cari berdasarkan Email")
 pilihan = input("\nPilih menu: ")
 
-    if pilihan == '1':
+ if pilihan == '1':
         nik_input = input("Masukkan NIK (16 digit): ")
         print(parse_nik(nik_input))
         
-    elif pilihan == '2':
+ elif pilihan == '2':
         name = input("Masukkan Nama: ")
         results = search_by_name(name)
         print_results(results)
 
-    elif pilihan == '3':
+ elif pilihan == '3':
         phone = input("Masukkan Nomor Telepon: ")
         results = search_by_phone(phone)
         print_results(results)
 
-    elif pilihan == '4':
+ elif pilihan == '4':
         email = input("Masukkan Email: ")
         results = search_by_email(email)
         print_results(results)
