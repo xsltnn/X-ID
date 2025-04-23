@@ -106,9 +106,7 @@ print("1. Cari NIK")
 print("2. Cari berdasarkan Nama")
 print("3. Cari berdasarkan Nomor Telepon")
 print("4. Cari berdasarkan Email")
-
-
-    pilihan = input("\nPilih menu: ")
+pilihan = input("\nPilih menu: ")
 
     if pilihan == '1':
         nik_input = input("Masukkan NIK (16 digit): ")
