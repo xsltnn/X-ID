@@ -102,31 +102,32 @@ def get_wilayah(kode_prov, kode_kab, kode_kec):
 # ------------------ MAIN ------------------
 def main():
     banner()
-print("1. Cari NIK")
-print("2. Cari berdasarkan Nama")
-print("3. Cari berdasarkan Nomor Telepon")
-print("4. Cari berdasarkan Email")
-pilihan = input("\nPilih menu: ")
 
- if pilihan == '1':
+    print("1. Cari NIK")
+    print("2. Cari berdasarkan Nama")
+    print("3. Cari berdasarkan Nomor Telepon")
+    print("4. Cari berdasarkan Email")
+    pilihan = input("\nPilih menu: ")
+
+    if pilihan == '1':
         nik_input = input("Masukkan NIK (16 digit): ")
         print(parse_nik(nik_input))
-        
- elif pilihan == '2':
+
+    elif pilihan == '2':
         name = input("Masukkan Nama: ")
         results = search_by_name(name)
         print_results(results)
 
- elif pilihan == '3':
+    elif pilihan == '3':
         phone = input("Masukkan Nomor Telepon: ")
         results = search_by_phone(phone)
         print_results(results)
 
- elif pilihan == '4':
+    elif pilihan == '4':
         email = input("Masukkan Email: ")
         results = search_by_email(email)
         print_results(results)
-        
+
 def print_results(results):
     if results:
         for r in results:
@@ -137,8 +138,7 @@ def print_results(results):
                     print(f"{key}: {val}")
     else:
         print("❌ Data tidak ditemukan.")
-               
-    
 
+# Cek apakah file ini dijalankan langsung
 if __name__ == '__main__':
     main()
