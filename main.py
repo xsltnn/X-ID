@@ -8,7 +8,6 @@ import os
 import db
 import socket
 from db import search_by_name, search_by_phone, search_by_email
-init(autoreset=True)
 
 # ------------------ BANNER ------------------
 def banner():
