@@ -1,5 +1,3 @@
+pymongo
+python-dotenv
 requests
-phonenumbers
-python-whois
-dnspython
-colorama
